@@ -6,6 +6,7 @@ import { useSelector } from "react-redux"
 import { Navigation } from "swiper/modules"
 import "swiper/css/bundle"
 import { FaBath, FaBed, FaChair, FaMapMarkerAlt, FaParking, FaShare } from "react-icons/fa"
+import Contact from "../components/Contact"
 
 // https://sabe.io/blog/javascript-format-numbers-commas#:~:text=The%20best%20way%20to%20format,format%20the%20number%20with%20commas.
 
@@ -15,7 +16,9 @@ export default function Listing() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [contact, setContact] = useState(false)
   const params = useParams()
+  const { currentUser } = useSelector((state) => state.user)
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -128,6 +131,15 @@ export default function Listing() {
                 {listing.furnished ? "Furnished" : "Not furnished"}
               </li>
             </ul>
+            {(!currentUser || (currentUser && listing.userRef !== currentUser._id)) && !contact && (
+                <button onClick={() =>setContact(true)} className="text-white bg-slate-700  text-center p-3 rounded-lg hover:opacity-85">
+                Contact Agent
+            </button>
+            )}
+            {contact &&
+                <Contact listing={listing}/>
+            }
+            
           </div>
         </div>
       )}
