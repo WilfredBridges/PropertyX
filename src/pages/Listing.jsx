@@ -5,8 +5,10 @@ import SwiperCore from "swiper"
 import { useSelector } from "react-redux"
 import { Navigation } from "swiper/modules"
 import "swiper/css/bundle"
-import { FaBath, FaBed, FaChair, FaMapMarkerAlt, FaParking, FaShare } from "react-icons/fa"
+import {  FaBath, FaBed, FaCar, FaHouzz, FaSwimmingPool } from "react-icons/fa"
+import { WiThermometer } from "react-icons/wi";
 import Contact from "../components/Contact"
+import { FaChair } from "react-icons/fa"
 
 // https://sabe.io/blog/javascript-format-numbers-commas#:~:text=The%20best%20way%20to%20format,format%20the%20number%20with%20commas.
 
@@ -42,106 +44,108 @@ export default function Listing() {
     fetchListing()
   }, [params.listingId])
 
+  if (loading) return <p className="text-center my-7 text-2xl">Loading...</p>
+  if (error)
+    return <p className="text-center my-7 text-2xl">Something went wrong...</p>
+
   return (
-    <main>
-      {loading && <p className="text-center my-7 text-2xl">Loading...</p>}
-      {error && (
-        <p className="text-center my-7 text-2xl">Something went wrong...</p>
-      )}
-      {listing && !loading && !error && (
-        <div>
-          <Swiper navigation>
-            {listing.imageUrls.map((url) => (
-              <SwiperSlide key={url}>
-                <div
-                  className="h-[550px]"
-                  style={{
-                    background: `url(${url}) center no-repeat`,
-                    backgroundSize: "cover",
-                  }}
-                ></div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-          <div className="fixed top-[13%] right-[3%] z-10 border rounded-full w-12 h-12 flex justify-center items-center bg-slate-100 cursor-pointer">
-            <FaShare
-              className="text-slate-500"
-              onClick={() => {
-                navigator.clipboard.writeText(window.location.href)
-                setCopied(true)
-                setTimeout(() => {
-                  setCopied(false)
-                }, 2000)
-              }}
-            />
-          </div>
-          {copied && (
-            <p className="fixed top-[19%] right-[3%] z-10 border rounded-full w-12 h-12 flex justify-center items-center bg-slate-100 cursor-pointer">
-              Link Copied
-            </p>
-          )}
-          <div className="flex flex-col max-w-4xl mx-auto p-3 my-7 gap-4">
-            <p className="text-2xl font-semibold">
-              {listing.name} - R{" "}
-              {listing.offer
-                ? (listing.regularPrice - +listing.discountPrice).toLocaleString('en-US')
-                : listing.regularPrice.toLocaleString("en-US")}
-              {listing.type === "rent" && " / month"}
-            </p>
-            <p className="flex items-center mt-6 gap-2 text-slate-600  text-sm">
-              <FaMapMarkerAlt className="text-green-700" />
-              {listing.address}
-            </p>
-            <div className="flex gap-4">
-              <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
-                {listing.type === "rent" ? "For Rent" : "For Sale"}
-              </p>
-              {listing.offer && (
-                <p className="bg-green-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
-                  R{listing.discountPrice} OFF
-                </p>
-              )}
-            </div>
-            <p>
-              {" "}
-              <span className="font-semibold text-black">
-                Description -{" "}
+    <main className="">
+      {listing && (
+        <>
+          <div className="flex flex-col w-full items-center mt-8 p-5">
+            <h1 className="text-4xl font-bold text-center text-slate-700">
+              {listing.bedrooms} Bedroom {listing.propertyType}{" "}
+              {listing.type === "sale" ? "for Sale" : "to Rent"} in{" "}
+              {listing.subburb}, {listing.city}
+            </h1>
+            <p className="text-2xl text-slate-500 font-semibold flex gap-4 items-center mt-5">
+              <span className=" font-bold text-slate-700">
+                R{parseInt(listing.regularPrice).toLocaleString()}
               </span>{" "}
-              {listing.description}
+              | <FaBed />
+              {listing.bedrooms} <FaBath />
+              {listing.bathrooms} <FaCar />
+              {listing.garages}
             </p>
-            <ul className="text-sm font-semibold flex flex-wrap gap-4 lg:gap-6 items-center">
-              <li className="flex items-center gap-2">
-                <FaBed className="text-lg" />
-                {listing.bedrooms > 1
-                  ? `${listing.bedrooms} Bedrooms`
-                  : "1 Bedroom"}
-              </li>
-              <li className="flex items-center gap-2">
-                <FaBath className="text-lg" />
-                {listing.bathrooms > 1
-                  ? `${listing.bathrooms} Bathrooms`
-                  : "1 Bathroom"}
-              </li>
-              <li className="flex items-center gap-2">
-                <FaParking className="text-lg" />
-                {listing.parking ? "Parking spot" : "No parking"}
-              </li>
-              <li className="flex items-center gap-2">
-                <FaChair className="text-lg" />
-                {listing.furnished ? "Furnished" : "Not furnished"}
-              </li>
-            </ul>
-            {(!currentUser || (currentUser && listing.userRef !== currentUser._id)) && !contact && (
-                <button onClick={() =>setContact(true)} className="text-white bg-slate-700  text-center p-3 rounded-lg hover:opacity-85">
-                Contact Agent
-            </button>
-            )}
-            {contact &&
-                <Contact listing={listing}/>
-            }
-            
           </div>
-        </div>
+          <div className="lg:w-1/2 p-4 bg-white m-6">
+            <div className="w-full ">
+              <Swiper navigation >
+                {listing.imageUrls.map((url, index) => (
+                  <SwiperSlide key={index}>
+                    <img
+                      src={url}
+                      alt="Listing"
+                      className="w-full h-64 object-cover"
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+              <Swiper
+                className="flex gap-4"
+                slidesPerView={2}
+                spaceBetween={10}
+              >
+                {listing.imageUrls.map((url, index) => (
+                  <img
+                    key={index}
+                    src={url}
+                    alt="Listing"
+                    className="w-20 h-20 object-cover"
+                  />
+                ))}
+              </Swiper>
+            </div>
+            
+           
+
+
+            <div className="flex flex-col w-full text-center mt-7">
+              <h3 className="text-2xl text-slate-700 font-semibold">
+                {listing.name}
+              </h3>
+              <p className="mt-4 text-start">{listing.description}</p>
+            </div>
+            <div className="mt-8">
+              <h5 className="text-slate-700 font-bold">Property Details:</h5>
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                <p>
+                  <FaBed className="inline" /> {listing.bedrooms} Bedrooms
+                </p>
+
+                {listing.pool && (
+                  <p>
+                    <FaSwimmingPool className="inline" /> Pool
+                  </p>
+                )}
+
+                <p>
+                  <FaBath className="inline" /> {listing.bathrooms} Bathrooms
+                </p>
+                <p>
+                  <FaHouzz className="inline" /> {listing.reception} Reception
+                  rooms
+                </p>
+                <p>
+                  <FaCar className="inline" /> {listing.garages} Garages
+                </p>
+                {listing.furnished && (
+                  <p>
+                    <FaChair className="inline" /> Furnished
+                  </p>
+                )}
+                {listing.aircon && (
+                  <p>
+                    <WiThermometer className="inline text-lg" /> Aircon
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="lg:w-1/2">
+            {/* Additional content for right column can be added here */}
+          </div>
+        </>
       )}
     </main>
   )
