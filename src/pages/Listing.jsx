@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 import { Swiper, SwiperSlide } from "swiper/react"
 import SwiperCore from "swiper"
 import { useSelector } from "react-redux"
-import { Navigation } from "swiper/modules"
+import { Navigation, FreeMode, Thumbs } from "swiper/modules"
 import "swiper/css/bundle"
 import {  FaBath, FaBed, FaCar, FaHouzz, FaSwimmingPool } from "react-icons/fa"
 import { WiThermometer } from "react-icons/wi";
@@ -19,6 +19,7 @@ export default function Listing() {
   const [error, setError] = useState(false)
   const [copied, setCopied] = useState(false)
   const [contact, setContact] = useState(false)
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const params = useParams()
   const { currentUser } = useSelector((state) => state.user)
 
@@ -52,7 +53,7 @@ export default function Listing() {
     <main className="">
       {listing && (
         <>
-          <div className="flex flex-col w-full items-center mt-8 p-5">
+          <div className="flex flex-col w-full items-center mt-8 p-5 ">
             <h1 className="text-4xl font-bold text-center text-slate-700">
               {listing.bedrooms} Bedroom {listing.propertyType}{" "}
               {listing.type === "sale" ? "for Sale" : "to Rent"} in{" "}
@@ -68,33 +69,40 @@ export default function Listing() {
               {listing.garages}
             </p>
           </div>
-          <div className="lg:w-1/2 p-4 bg-white m-6">
-            <div className="w-full ">
-              <Swiper navigation >
-                {listing.imageUrls.map((url, index) => (
-                  <SwiperSlide key={index}>
-                    <img
-                      src={url}
-                      alt="Listing"
-                      className="w-full h-64 object-cover"
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-              <Swiper
-                className="flex gap-4"
-                slidesPerView={2}
-                spaceBetween={10}
-              >
-                {listing.imageUrls.map((url, index) => (
-                  <img
-                    key={index}
-                    src={url}
-                    alt="Listing"
-                    className="w-20 h-20 object-cover"
-                  />
-                ))}
-              </Swiper>
+        <div className="flex flex-col lg:flex-row w-full ">
+          <div className="lg:w-2/3 p-4 bg-white m-6">
+            <div className="w-full">
+            <Swiper
+            style={{ '--swiper-navigation-color': '#000', '--swiper-pagination-color': '#000' }}
+            loop={true}
+            spaceBetween={10}
+            navigation={true}
+            thumbs={{ swiper: thumbsSwiper }}
+            modules={[FreeMode, Navigation, Thumbs]}
+            className="mySwiper2"
+          >
+            {listing.imageUrls.map((url, index) => (
+              <SwiperSlide key={index}>
+                <img src={url} alt="Listing" className="w-full h-80 object-cover overflow-hidden" />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          <Swiper
+            onSwiper={setThumbsSwiper}
+            loop={true}
+            spaceBetween={2}
+            slidesPerView={6}
+            freeMode={true}
+            watchSlidesProgress={true}
+            modules={[FreeMode, Navigation, Thumbs]}
+            className="mySwiper mt-5"
+          >
+            {listing.imageUrls.map((url, index) => (
+              <SwiperSlide key={index}>
+                <img src={url} alt="Thumbnail" className="sm:w-full sm:h-40 w-20 h-20 object-cover overflow-hidden" />
+              </SwiperSlide>
+            ))}
+          </Swiper>
             </div>
             
            
@@ -142,9 +150,10 @@ export default function Listing() {
               </div>
             </div>
           </div>
-          <div className="lg:w-1/2">
-            {/* Additional content for right column can be added here */}
+          <div className="lg:w-1/3 mt-5">
+            <Contact listing={listing} />
           </div>
+        </div>
         </>
       )}
     </main>

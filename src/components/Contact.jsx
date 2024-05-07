@@ -3,10 +3,23 @@ import { Link } from "react-router-dom"
 
 export default function Contact({ listing }) {
   const [landlord, setLandlord] = useState(null)
-  const [message, setMessage] = useState("")
+  const [message, setMessage] = useState("Hi, I'm interested in this property")
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [number, setNumber] = useState("")
   const onChange = (e) => {
-    setMessage(e.target.value)
+    const { name, value } = e.target;
+    if (name === 'name') {
+      setName(value);
+    } else if (name === 'email') {
+      setEmail(value);
+    } else if (name === 'number') {
+      setNumber(value);
+    } else if (name === 'message') {
+      setMessage(value);
+    }
   }
+
 
   useEffect(() => {
     const fetchLandlord = async () => {
@@ -23,12 +36,39 @@ export default function Contact({ listing }) {
   return (
     <>
       {landlord && (
-        <div className="flex flex-col gap-2">
-          <p>
+        <div className="flex flex-col gap-2 mr-20 ml-20 overflow-hidden lg:ml-0 lg:mr-0 mb-10 p-5 bg-white">
+          <p className="text-center text-xl">
             Contact <span className="font-semibold">{landlord.username}</span>{" "}
             for{" "}
             <span className="font-semibold">{listing.name.toLowerCase()}</span>
           </p>
+          <div className="flex justify-center">
+            <img src={landlord.avatar} alt="" className="rounded-full"/>
+          </div>
+          <input type="text" 
+            name='name'
+            id='name'
+            value={name}
+            onChange={onChange}
+            placeholder="Full Name"
+            className="w-full border p-3 rounded-lg bg-slate-100"
+          />
+          <input type="text"
+            name="email"
+            id="email"
+            value={email}
+            onChange={onChange}
+            placeholder="Email Address"
+            className="w-full border p-3 rounded-lg bg-slate-100"
+          />
+          <input type="text" 
+            name='number'
+            id='number'
+            value={number}
+            onChange={onChange}
+            placeholder="Phone Number"
+            className="w-full border p-3 rounded-lg bg-slate-100"
+          />
           <textarea
             name="message"
             id="message"
@@ -36,12 +76,12 @@ export default function Contact({ listing }) {
             value={message}
             onChange={onChange}
             placeholder="Enter your message here..."
-            className="w-full border p-3 rounded-lg"
+            className="w-full border p-3 rounded-lg bg-slate-100"
           ></textarea>
 
           <Link
-            to={`mailto:${landlord.email}?subject=Regarding ${listing.name}&body=${message}`}
-            className="bg-slate-700 text-white text-center p-3 uppercase rounded-lg hover:opacity-95"
+            to={`mailto:${landlord.email}?subject=Regarding: ${listing.name}&body=Name: ${name}%0D%0AEmail: ${email}%0D%0APhone: ${number}%0D%0A${message}`}
+            className="bg-slate-700 text-white text-center p-3 uppercase rounded-lg hover:opacity-95 w-40 mx-auto"
           >
             Send Message
           </Link>
