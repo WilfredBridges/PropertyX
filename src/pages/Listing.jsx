@@ -9,6 +9,7 @@ import {  FaBath, FaBed, FaCar, FaHouzz, FaSwimmingPool } from "react-icons/fa"
 import { WiThermometer } from "react-icons/wi";
 import Contact from "../components/Contact"
 import { FaChair } from "react-icons/fa"
+import Bond from "../components/Bond"
 
 // https://sabe.io/blog/javascript-format-numbers-commas#:~:text=The%20best%20way%20to%20format,format%20the%20number%20with%20commas.
 
@@ -152,6 +153,7 @@ export default function Listing() {
           </div>
           <div className="lg:w-1/3 mt-5">
             <Contact listing={listing} />
+            <Bond listing={listing} />
           </div>
         </div>
         </>

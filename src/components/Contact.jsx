@@ -21,6 +21,7 @@ export default function Contact({ listing }) {
   }
 
 
+
   useEffect(() => {
     const fetchLandlord = async () => {
       try {
@@ -36,39 +37,43 @@ export default function Contact({ listing }) {
   return (
     <>
       {landlord && (
-        <div className="flex flex-col gap-2 mr-20 ml-20 overflow-hidden lg:ml-0 lg:mr-0 mb-10 p-5 bg-white">
+        <div className="flex flex-col gap-2 mr-20 ml-20 overflow-hidden lg:ml-0 lg:mr-0 mb-10 p-10 bg-white">
           <p className="text-center text-xl">
-            Contact <span className="font-semibold">{landlord.username}</span>{" "}
+            Contact <span className="font-semibold">{landlord.username.charAt(0).toUpperCase() + landlord.username.slice(1)}</span>{" "}
             for{" "}
-            <span className="font-semibold">{listing.name.toLowerCase()}</span>
+            <span className="font-semibold">{listing.name}</span>
           </p>
           <div className="flex justify-center">
-            <img src={landlord.avatar} alt="" className="rounded-full"/>
+            <img src={landlord.avatar} alt="Agent profile picture" className="rounded-full"/>
           </div>
+          <label htmlFor="">Full Name</label>
           <input type="text" 
             name='name'
             id='name'
             value={name}
             onChange={onChange}
             placeholder="Full Name"
-            className="w-full border p-3 rounded-lg bg-slate-100"
+            className="w-full border p-3 rounded-lg bg-slate-100 mb-5"
           />
+          <label htmlFor="">Email</label>
           <input type="text"
             name="email"
             id="email"
             value={email}
             onChange={onChange}
             placeholder="Email Address"
-            className="w-full border p-3 rounded-lg bg-slate-100"
+            className="w-full border p-3 rounded-lg bg-slate-100 mb-5"
           />
+          <label htmlFor="">Contact Number</label>
           <input type="text" 
             name='number'
             id='number'
             value={number}
             onChange={onChange}
             placeholder="Phone Number"
-            className="w-full border p-3 rounded-lg bg-slate-100"
+            className="w-full border p-3 rounded-lg bg-slate-100 mb-5"
           />
+          <label htmlFor="">Message</label>
           <textarea
             name="message"
             id="message"
