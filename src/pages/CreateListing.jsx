@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import {
   getDownloadURL,
   getStorage,
@@ -8,11 +8,14 @@ import {
 import { app } from "../firebase"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import { Loader } from '@googlemaps/js-api-loader';
+
 
 export default function CreateListing() {
   const { currentUser } = useSelector((state) => state.user)
   const navigate = useNavigate()
   const [files, setFiles] = useState([])
+  const addressInputRef = useRef(null);
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: "",
@@ -167,6 +170,27 @@ export default function CreateListing() {
       setLoading(false)
     }
   }
+
+  const loader = new Loader({
+    apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+    version: "weekly",
+    libraries: ["places"]
+  });
+
+  loader.load().then(() => {
+    const autocomplete = new window.google.maps.places.Autocomplete(addressInputRef.current);
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace();
+      setFormData({
+        ...formData,
+        address: place.formatted_address,
+        long: location.lng().toString(),
+        lat: location.lat().toString()
+      });
+    });
+  });
+
+
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">
@@ -212,12 +236,13 @@ export default function CreateListing() {
           />
           <input
             type="text"
-            placeholder="City"
+            placeholder="Address"
             className="border p-3 rounded-lg"
-            id="city"
+            id="address"
             required
             onChange={handleChange}
-            value={formData.city}
+            value={formData.address}
+            ref={addressInputRef}
           />
           <input
             type="text"
@@ -230,13 +255,15 @@ export default function CreateListing() {
           />
           <input
             type="text"
-            placeholder="Address"
+            placeholder="City"
             className="border p-3 rounded-lg"
-            id="address"
+            id="city"
             required
             onChange={handleChange}
-            value={formData.address}
+            value={formData.city}
           />
+          
+          
           <div className="flex gap-6">
             <input
               type="number"
@@ -248,7 +275,7 @@ export default function CreateListing() {
               value={formData.long}
             />
             <input
-              type="number"
+              type="string"
               placeholder="Latitude"
               className="border p-3 rounded-lg"
               id="lat"

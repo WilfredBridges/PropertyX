@@ -5,7 +5,7 @@ import SwiperCore from "swiper"
 import { useSelector } from "react-redux"
 import { Navigation, FreeMode, Thumbs } from "swiper/modules"
 import "swiper/css/bundle"
-import { FaBath, FaBed, FaCar, FaHouzz, FaSwimmingPool } from "react-icons/fa"
+import { FaBath, FaBed, FaCar, FaHouzz, FaLocationArrow, FaSwimmingPool } from "react-icons/fa"
 import { WiThermometer } from "react-icons/wi"
 import Contact from "../components/Contact"
 import { FaChair } from "react-icons/fa"
@@ -164,7 +164,30 @@ export default function Listing() {
               </div>
               <div className="mt-8">
                 <h5 className="text-slate-700 font-bold">Location:</h5>
-                <div className="mt-4 border-4">
+                <div className="mt-4 border-4 flex justify-between">
+                  <div className="flex flex-col gap-4">
+                    <h3 className="text-slate-700 font-bold">Address:</h3>
+                    <div className="flex gap-2 items-center">
+                      <FaLocationArrow className="inline text-blue-500" />
+                    <p className="text-start">
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                          listing.address +
+                            ", " +
+                            listing.city +
+                            ", " +
+                            listing.subburb
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 font-semibold"
+                      >
+                        {listing.address}, {listing.city}, {listing.subburb}
+                      </a>
+                    </p>
+                    </div>
+                  </div>
+
                   <MapContainer
                     center={[listing.lat, listing.long]}
                     zoom={13}
@@ -177,12 +200,15 @@ export default function Listing() {
                     />
                     <Marker position={[listing.lat, listing.long]}>
                       <Popup>
-                        {listing.name} <br /> 
-                        {listing.address} <br />{" "} 
-                        R{" "}{listing.regularPrice} <br />
+                        {listing.name} <br />
+                        {listing.address} <br /> R {listing.regularPrice} <br />
                         <br />
-                        <img src={listing.imageUrls[0]} alt={listing.name} style={{ width: '100%' }} /> <br /> 
-                        
+                        <img
+                          src={listing.imageUrls[0]}
+                          alt={listing.name}
+                          style={{ width: "100%" }}
+                        />{" "}
+                        <br />
                       </Popup>
                     </Marker>
                   </MapContainer>
