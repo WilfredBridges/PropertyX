@@ -20,8 +20,6 @@ export default function CreateListing() {
     imageUrls: [],
     name: "",
     description: "",
-    city: "",
-    subburb: "",
     address: "",
     long: "",
     lat: "",
@@ -181,12 +179,17 @@ export default function CreateListing() {
     const autocomplete = new window.google.maps.places.Autocomplete(addressInputRef.current);
     autocomplete.addListener('place_changed', () => {
       const place = autocomplete.getPlace();
-      setFormData({
-        ...formData,
+      if (!place.geometry) {
+        console.error('Autocomplete\'s returned place contains no geometry');
+        return;
+      }
+      const location = place.geometry.location;
+      setFormData(prevFormData => ({
+        ...prevFormData,
         address: place.formatted_address,
-        long: location.lng().toString(),
+        long: location.lng().toString(), // Ensure these values are strings if your inputs expect strings
         lat: location.lat().toString()
-      });
+      }));
     });
   });
 
@@ -244,29 +247,11 @@ export default function CreateListing() {
             value={formData.address}
             ref={addressInputRef}
           />
-          <input
-            type="text"
-            placeholder="Suburb"
-            className="border p-3 rounded-lg"
-            id="subburb"
-            required
-            onChange={handleChange}
-            value={formData.subburb}
-          />
-          <input
-            type="text"
-            placeholder="City"
-            className="border p-3 rounded-lg"
-            id="city"
-            required
-            onChange={handleChange}
-            value={formData.city}
-          />
           
           
           <div className="flex gap-6">
             <input
-              type="number"
+              type="string"
               placeholder="Longitude"
               className="border p-3 rounded-lg"
               id="long"
