@@ -20,6 +20,8 @@ export default function CreateListing() {
     city: "",
     subburb: "",
     address: "",
+    long: "",
+    lat: "",
     type: "rent",
     propertyType: "",
     bedrooms: 1,
@@ -41,7 +43,7 @@ export default function CreateListing() {
   const [loading, setLoading] = useState(false)
   console.log(formData)
   const handleImageSubmit = (e) => {
-    if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
+    if (files.length > 0 && files.length + formData.imageUrls.length < 21) {
       setUploading(true)
       setImageUploadError(false)
       const promises = []
@@ -63,7 +65,7 @@ export default function CreateListing() {
           setUploading(false)
         })
     } else {
-      setImageUploadError("You can only upload 6 images per listing")
+      setImageUploadError("You can only upload 20 images per listing")
       setUploading(false)
     }
   }
@@ -183,7 +185,7 @@ export default function CreateListing() {
             onChange={handleChange}
             value={formData.name}
           />
-          <select 
+          <select
             placeholder=""
             className="border p-3 rounded-lg"
             id="propertyType"
@@ -235,6 +237,26 @@ export default function CreateListing() {
             onChange={handleChange}
             value={formData.address}
           />
+          <div className="flex gap-6">
+            <input
+              type="number"
+              placeholder="Longitude"
+              className="border p-3 rounded-lg"
+              id="long"
+              required
+              onChange={handleChange}
+              value={formData.long}
+            />
+            <input
+              type="number"
+              placeholder="Latitude"
+              className="border p-3 rounded-lg"
+              id="lat"
+              required
+              onChange={handleChange}
+              value={formData.lat}
+            />
+          </div>
           <div className="flex gap-6 flex-wrap">
             <div className="flex gap-2">
               <input
@@ -297,11 +319,12 @@ export default function CreateListing() {
               <span>Balcony</span>
             </div>
             <div className="flex gap-2">
-              <input type="checkbox" 
-              id="pool" 
-              className="w-5" 
-              onChange={handleChange}
-              checked={formData.pool}
+              <input
+                type="checkbox"
+                id="pool"
+                className="w-5"
+                onChange={handleChange}
+                checked={formData.pool}
               />
               <span>Pool</span>
             </div>
@@ -344,19 +367,29 @@ export default function CreateListing() {
               <p>Baths</p>
             </div>
             <div className="flex items-center gap-2">
-              <input type="number"
-               id="reception" 
-               min="1" 
-               max="10"
-               required
-               className="p-3 border border-gray-300 rounded-lg"
-               onChange={handleChange}
-               value={formData.reception}
-                />
+              <input
+                type="number"
+                id="reception"
+                min="1"
+                max="10"
+                required
+                className="p-3 border border-gray-300 rounded-lg"
+                onChange={handleChange}
+                value={formData.reception}
+              />
               <p>Reception Rooms</p>
             </div>
             <div className="flex items-center gap-2">
-              <input type="number" id="garages" min="1" max="10" required className="p-3 border border-gray-300 rounded-lg" onChange={handleChange} value={formData.garages} />
+              <input
+                type="number"
+                id="garages"
+                min="1"
+                max="10"
+                required
+                className="p-3 border border-gray-300 rounded-lg"
+                onChange={handleChange}
+                value={formData.garages}
+              />
               <p>Garages</p>
             </div>
             <div className="flex items-center gap-2">
