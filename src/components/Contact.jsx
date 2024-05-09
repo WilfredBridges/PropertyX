@@ -39,7 +39,7 @@ export default function Contact({ listing }) {
   return (
     <>
       {landlord && (
-        <div className="flex flex-col gap-2 mr-20 ml-20 overflow-hidden lg:ml-0 lg:mr-0 mb-10 p-10 bg-white">
+        <div className="flex flex-col gap-2  overflow-hidden lg:ml-2 lg:mr-2 mb-10 p-10 m-1 bg-white">
           <p className="text-center text-xl">
             Contact <span className="font-semibold">{landlord.username.charAt(0).toUpperCase() + landlord.username.slice(1)}</span>{" "}
             for{" "}
