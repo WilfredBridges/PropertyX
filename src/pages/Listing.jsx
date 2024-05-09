@@ -110,9 +110,13 @@ export default function Listing() {
     })
   }, [listing])
 
-  console.log(nearbyPlaces)
+  console.log(listing)
+  
 
   if (loading) return <p className="text-center my-7 text-2xl">Loading...</p>
+  if (!listing) {
+    return <p className="text-center my-7 text-2xl">Loading...</p>;
+  }
   if (error)
     return <p className="text-center my-7 text-2xl">Something went wrong...</p>
 
@@ -226,8 +230,8 @@ export default function Listing() {
               </div>
               <div className="mt-8">
                 <h5 className="text-slate-700 font-bold">Location:</h5>
-                <div className="mt-4 border-4 flex justify-between">
-                  <div className="flex flex-col gap-4">
+                <div className="mt-4 border-4 flex justify-between lg:flex">
+                  <div className="flex flex-col gap-4 lg:w-1/2">
                     <h3 className="text-slate-700 font-bold">Address:</h3>
                     <div className="flex gap-2 items-center p-3">
                       <FaLocationArrow className="inline text-slate-500 hover:text-blue-500" />
@@ -260,7 +264,7 @@ export default function Listing() {
                       </ul>
                     </div>
                   </div>
-
+                  
                   <MapContainer
                     center={[listing.lat, listing.long]}
                     zoom={13}

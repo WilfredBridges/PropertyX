@@ -34,6 +34,8 @@ export default function Contact({ listing }) {
     }
     fetchLandlord()
   }, [listing.userRef])
+
+  {!landlord && <div>Loading...</div>}
   return (
     <>
       {landlord && (
@@ -44,7 +46,7 @@ export default function Contact({ listing }) {
             <span className="font-semibold">{listing.name}</span>
           </p>
           <div className="flex justify-center">
-            <img src={landlord.avatar} alt="Agent profile picture" className="rounded-full"/>
+            <img src={landlord.avatar} alt="Agent profile picture" className="rounded-full w-32 h-32"/>
           </div>
           <label htmlFor="">Full Name</label>
           <input type="text" 
