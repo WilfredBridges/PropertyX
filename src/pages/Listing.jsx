@@ -5,13 +5,23 @@ import SwiperCore from "swiper"
 import { useSelector } from "react-redux"
 import { Navigation, FreeMode, Thumbs } from "swiper/modules"
 import "swiper/css/bundle"
-import { FaBath, FaBed, FaCar, FaHouzz, FaLocationArrow, FaSwimmingPool } from "react-icons/fa"
+import {
+  FaBath,
+  FaBed,
+  FaCar,
+  FaHouzz,
+  FaLocationArrow,
+  FaMapMarkedAlt,
+  FaSwimmingPool,
+} from "react-icons/fa"
 import { WiThermometer } from "react-icons/wi"
 import Contact from "../components/Contact"
 import { FaChair } from "react-icons/fa"
 import Bond from "../components/Bond"
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
+import L from "leaflet";
+import { Loader } from "@googlemaps/js-api-loader"
 
 // https://sabe.io/blog/javascript-format-numbers-commas#:~:text=The%20best%20way%20to%20format,format%20the%20number%20with%20commas.
 
@@ -25,8 +35,26 @@ export default function Listing() {
   const [thumbsSwiper, setThumbsSwiper] = useState(null)
   const params = useParams()
   const { currentUser } = useSelector((state) => state.user)
+  const [nearbyPlaces, setNearbyPlaces] = useState([])
 
-  console.log(listing)
+  const mainMarkerIcon = new L.Icon({
+    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+    
+  });
+
+  const placesMarkerIcon = new L.Icon({
+    iconUrl: "https://img.icons8.com/officel/30/000000/marker.png",
+    iconSize: [30, 30],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+
+  
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -49,6 +77,40 @@ export default function Listing() {
     }
     fetchListing()
   }, [params.listingId])
+
+  useEffect(() => {
+    const loader = new Loader({
+      apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+      version: "weekly",
+      libraries: ["places"],
+    })
+
+    loader.load().then(() => {
+      const map = new window.google.maps.Map(document.createElement("div"), {
+        center: { lat: parseFloat(listing.lat), lng: parseFloat(listing.long) },
+        zoom: 15,
+      })
+
+      const service = new window.google.maps.places.PlacesService(map)
+      const request = {
+        location: {
+          lat: parseFloat(listing.lat),
+          lng: parseFloat(listing.long),
+        },
+        radius: "2000",
+        type: ["restaurant"],
+        maxResults: 10,
+      }
+
+      service.nearbySearch(request, (results, status) => {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+          setNearbyPlaces(results)
+        }
+      })
+    })
+  }, [listing])
+
+  console.log(nearbyPlaces)
 
   if (loading) return <p className="text-center my-7 text-2xl">Loading...</p>
   if (error)
@@ -167,24 +229,35 @@ export default function Listing() {
                 <div className="mt-4 border-4 flex justify-between">
                   <div className="flex flex-col gap-4">
                     <h3 className="text-slate-700 font-bold">Address:</h3>
-                    <div className="flex gap-2 items-center">
-                      <FaLocationArrow className="inline text-blue-500" />
-                    <p className="text-start">
-                      <a
-                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                          listing.address +
-                            ", " +
-                            listing.city +
-                            ", " +
-                            listing.subburb
-                        )}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 font-semibold"
-                      >
-                        {listing.address}, {listing.city}, {listing.subburb}
-                      </a>
-                    </p>
+                    <div className="flex gap-2 items-center p-3">
+                      <FaLocationArrow className="inline text-slate-500 hover:text-blue-500" />
+                      <p className="text-start">
+                        <a
+                          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                            listing.address
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-slate-500 hover:text-blue-500 font-semibold"
+                        >
+                          {listing.address}, {listing.city}, {listing.subburb}
+                        </a>
+                      </p>
+                    </div>
+                    <div className="">
+                      <h3 className="text-slate-700 font-bold">
+                        Nearby Places:
+                      </h3>
+                      <ul>
+                        {nearbyPlaces.slice(0, 6).map((place, index) => (
+                          <li
+                            key={index}
+                            className="text-slate-500  font-semibold p-3"
+                          >
+                            - {place.name}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
 
@@ -198,7 +271,7 @@ export default function Listing() {
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     />
-                    <Marker position={[listing.lat, listing.long]}>
+                    <Marker position={[listing.lat, listing.long]} icon={mainMarkerIcon}>
                       <Popup>
                         {listing.name} <br />
                         {listing.address} <br /> R {listing.regularPrice} <br />
@@ -211,13 +284,28 @@ export default function Listing() {
                         <br />
                       </Popup>
                     </Marker>
+                    {nearbyPlaces.map((place, index) => {
+                      const { lat, lng } = place.geometry.location
+                      if (lat && lng) {
+                        return (
+                          <Marker key={index} position={[lat(), lng()]} icon={placesMarkerIcon}>
+                            <Popup>
+                              {place.name} <br />
+                              {place.vicinity} <br />
+                            </Popup>
+                          </Marker>
+                        )
+                      } else {
+                        return null // Skip rendering if lat and lng are missing
+                      }
+                    })}
                   </MapContainer>
                 </div>
               </div>
             </div>
             <div className="lg:w-1/3 mt-5">
               <Contact listing={listing} />
-              <Bond listing={listing} />
+              {listing.type !== "rent" && <Bond listing={listing} />}
             </div>
           </div>
         </>

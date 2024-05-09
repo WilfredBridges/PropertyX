@@ -21,6 +21,8 @@ export default function CreateListing() {
     name: "",
     description: "",
     address: "",
+    city: "",
+    subburb: "",
     long: "",
     lat: "",
     type: "rent",
@@ -187,8 +189,10 @@ export default function CreateListing() {
       setFormData(prevFormData => ({
         ...prevFormData,
         address: place.formatted_address,
-        long: location.lng().toString(), // Ensure these values are strings if your inputs expect strings
-        lat: location.lat().toString()
+        long: location.lng().toString(), 
+        lat: location.lat().toString(),
+        subburb: place.address_components.find(component => component.types.includes('locality')).long_name,
+        city: place.address_components.find(component => component.types.includes('postal_town')).long_name
       }));
     });
   });
@@ -247,6 +251,25 @@ export default function CreateListing() {
             value={formData.address}
             ref={addressInputRef}
           />
+          <input
+            type='text'
+            placeholder='Suburb'
+            className='border p-3 rounded-lg'
+            id='subburb'
+            required
+            onChange={handleChange}
+            value={formData.subburb}
+          />
+          <input
+            type='text'
+            placeholder='City'
+            className='border p-3 rounded-lg'
+            id='city'
+            required
+            onChange={handleChange}
+            value={formData.city}
+          />
+          
           
           
           <div className="flex gap-6">
