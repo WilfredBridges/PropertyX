@@ -16,11 +16,13 @@ import {
 } from "react-icons/fa"
 import { WiThermometer } from "react-icons/wi"
 import Contact from "../components/Contact"
+import ImageModal from "../components/ImageModal"
+import Modal from "@mui/material/Modal"
 import { FaChair } from "react-icons/fa"
 import Bond from "../components/Bond"
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
 import "leaflet/dist/leaflet.css"
-import L from "leaflet";
+import L from "leaflet"
 import { Loader } from "@googlemaps/js-api-loader"
 
 // https://sabe.io/blog/javascript-format-numbers-commas#:~:text=The%20best%20way%20to%20format,format%20the%20number%20with%20commas.
@@ -36,25 +38,34 @@ export default function Listing() {
   const params = useParams()
   const { currentUser } = useSelector((state) => state.user)
   const [nearbyPlaces, setNearbyPlaces] = useState([])
+  const [showModal, setShowModal] = useState(false)
+  const [selectedImage, setSelectedImage] = useState(null)
 
   const mainMarkerIcon = new L.Icon({
-    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+    iconUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
-    
-  });
+  })
 
   const placesMarkerIcon = new L.Icon({
     iconUrl: "https://img.icons8.com/officel/30/000000/marker.png",
     iconSize: [30, 30],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
+    shadowSize: [41, 41],
+  })
 
-  
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl)
+    setShowModal(true)
+  }
+
+  const closeModal = () => {
+    setShowModal(false)
+  }
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -110,12 +121,10 @@ export default function Listing() {
     })
   }, [listing])
 
-  console.log(listing)
-  
 
   if (loading) return <p className="text-center my-7 text-2xl">Loading...</p>
   if (!listing) {
-    return <p className="text-center my-7 text-2xl">Loading...</p>;
+    return <p className="text-center my-7 text-2xl">Loading...</p>
   }
   if (error)
     return <p className="text-center my-7 text-2xl">Something went wrong...</p>
@@ -140,8 +149,8 @@ export default function Listing() {
               {listing.garages}
             </p>
           </div>
-          <div className="flex flex-col lg:flex-row w-full ">
-            <div className="lg:w-2/3 p-4 bg-white m-6">
+          <div className="flex flex-col lg:flex-row w-full lg:m-2 ">
+            <div className="lg:w-2/3 p-2 bg-white m-1">
               <div className="w-full">
                 <Swiper
                   style={{
@@ -156,15 +165,23 @@ export default function Listing() {
                   className="mySwiper2"
                 >
                   {listing.imageUrls.map((url, index) => (
-                    <SwiperSlide key={index}>
+                    <SwiperSlide
+                      key={index}
+                      onClick={() => handleImageClick(url)}
+                    >
                       <img
                         src={url}
                         alt="Listing"
-                        className="w-full h-80 object-cover overflow-hidden"
+                        className="w-full h-80 object-cover overflow-hidden cursor-pointer"
                       />
                     </SwiperSlide>
                   ))}
                 </Swiper>
+                {showModal && (
+                  <Modal open={showModal} onClose={closeModal}>
+                    <ImageModal imageUrls={listing.imageUrls} onClose={closeModal} />
+                  </Modal>
+                )}
                 <Swiper
                   onSwiper={setThumbsSwiper}
                   loop={true}
@@ -173,7 +190,7 @@ export default function Listing() {
                   freeMode={true}
                   watchSlidesProgress={true}
                   modules={[FreeMode, Navigation, Thumbs]}
-                  className="mySwiper mt-5"
+                  className="mySwiper mt-5 cursor-pointer"
                 >
                   {listing.imageUrls.map((url, index) => (
                     <SwiperSlide key={index}>
@@ -228,10 +245,10 @@ export default function Listing() {
                   )}
                 </div>
               </div>
-              <div className="mt-8">
+              <div className="mt-8 sm-flex sm-flex-col">
                 <h5 className="text-slate-700 font-bold">Location:</h5>
-                <div className="mt-4 border-4 flex justify-between lg:flex">
-                  <div className="flex flex-col gap-4 lg:w-1/2">
+                <div className="mt-4 border-4 flex justify-between sm:flex">
+                  <div className="flex flex-col gap-4 sm:w-full">
                     <h3 className="text-slate-700 font-bold">Address:</h3>
                     <div className="flex gap-2 items-center p-3">
                       <FaLocationArrow className="inline text-slate-500 hover:text-blue-500" />
@@ -264,46 +281,55 @@ export default function Listing() {
                       </ul>
                     </div>
                   </div>
-                  
-                  <MapContainer
-                    center={[listing.lat, listing.long]}
-                    zoom={13}
-                    scrollWheelZoom={false}
-                    style={{ height: "400px", width: "50%" }}
-                  >
-                    <TileLayer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    />
-                    <Marker position={[listing.lat, listing.long]} icon={mainMarkerIcon}>
-                      <Popup>
-                        {listing.name} <br />
-                        {listing.address} <br /> R {listing.regularPrice} <br />
-                        <br />
-                        <img
-                          src={listing.imageUrls[0]}
-                          alt={listing.name}
-                          style={{ width: "100%" }}
-                        />{" "}
-                        <br />
-                      </Popup>
-                    </Marker>
-                    {nearbyPlaces.map((place, index) => {
-                      const { lat, lng } = place.geometry.location
-                      if (lat && lng) {
-                        return (
-                          <Marker key={index} position={[lat(), lng()]} icon={placesMarkerIcon}>
-                            <Popup>
-                              {place.name} <br />
-                              {place.vicinity} <br />
-                            </Popup>
-                          </Marker>
-                        )
-                      } else {
-                        return null // Skip rendering if lat and lng are missing
-                      }
-                    })}
-                  </MapContainer>
+                  <div className=" sm:w-full sm:h-96 sm:flex sm:flex-col">
+                    <MapContainer
+                      center={[listing.lat, listing.long]}
+                      zoom={13}
+                      scrollWheelZoom={false}
+                      className="h-screen sm:h-96 mt-2"
+                    >
+                      <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                      />
+                      <Marker
+                        position={[listing.lat, listing.long]}
+                        icon={mainMarkerIcon}
+                      >
+                        <Popup>
+                          {listing.name} <br />
+                          {listing.address} <br /> R {listing.regularPrice}{" "}
+                          <br />
+                          <br />
+                          <img
+                            src={listing.imageUrls[0]}
+                            alt={listing.name}
+                            style={{ width: "100%" }}
+                          />{" "}
+                          <br />
+                        </Popup>
+                      </Marker>
+                      {nearbyPlaces.map((place, index) => {
+                        const { lat, lng } = place.geometry.location
+                        if (lat && lng) {
+                          return (
+                            <Marker
+                              key={index}
+                              position={[lat(), lng()]}
+                              icon={placesMarkerIcon}
+                            >
+                              <Popup>
+                                {place.name} <br />
+                                {place.vicinity} <br />
+                              </Popup>
+                            </Marker>
+                          )
+                        } else {
+                          return null // Skip rendering if lat and lng are missing
+                        }
+                      })}
+                    </MapContainer>
+                  </div>
                 </div>
               </div>
             </div>
