@@ -22,11 +22,11 @@ const ImageModal = ({ imageUrls, onClose }) => {
             <img src={imageUrls[currentImageIndex]} alt="Enlarged" className="mx-auto my-5 w-80vw " style={{ height: "80vh" }} />
             <div className="absolute top-80 left-2 right-2 flex justify-between">
               <button onClick={handlePrevImage}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
+                className="bg-transparent hover:bg-blue-200 text-white font-extrabold py-2 px-4 rounded-full border border-white-700"
               >&lt;
               </button>
               <button onClick={handleNextImage}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
+                className="bg-transparent hover:bg-blue-200 text-white font-extrabold py-2 px-4 rounded-full border border-white-700"
               >&gt;
               </button>
             </div>
