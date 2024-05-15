@@ -108,15 +108,7 @@ export default function CreateListing() {
     })
   }
 
-  const handleAddFeature = (e) => {
-    
-    if (typeof formData.misc === 'string') {
-      setFormData({
-        ...formData,
-        misc: [formData.misc, e.target.value],
-      });
-    } 
-  } 
+  
 
   const handleChange = (e) => {
     if (e.target.id === "sale" || e.target.id === "rent") {
@@ -153,9 +145,10 @@ export default function CreateListing() {
     }
 
     if (e.target.id === "misc") {
+      
       setFormData({
         ...formData,
-        misc: e.target.value.split(",").map((item) => item.trim()),
+        misc: e.target.value.split(",").map((item => item)),
       });
 
     }
@@ -262,7 +255,7 @@ export default function CreateListing() {
           <textarea
             type="text"
             placeholder="Description"
-            className="border p-3 rounded-lg"
+            className="border p-3 rounded-lg h-48"
             id="description"
             required
             onChange={handleChange}
@@ -400,9 +393,9 @@ export default function CreateListing() {
             </div>
           </div>
           <div className="flex flex-wrap gap-6 items-center" >
-          <p>Other Features:</p>
+          
             <div>
-              
+            <p>Other Features:</p>
               <input
                 type="text"
                 className="p-3 border border-gray-300 rounded-md"
@@ -413,18 +406,13 @@ export default function CreateListing() {
               />
             </div>
             <div>
-              <button onClick={handleAddFeature}
-                      className="p-3 bg-slate-700 border rounded-lg text-white"
-              
-              >
-                Add
-              </button>
+              <p className="text-sm text-gray-400">(use , to separate)</p>
             </div>
           </div>
           <div>
             {formData.misc.map((feature, index) => (
               <div key={index}>
-              <p>{feature}</p>
+              <p>- {feature}</p>
             </div>
             ))}
           </div>
