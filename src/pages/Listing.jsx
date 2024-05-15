@@ -12,6 +12,7 @@ import {
   FaHouzz,
   FaLocationArrow,
   FaMapMarkedAlt,
+  FaRegCheckCircle,
   FaSwimmingPool,
 } from "react-icons/fa"
 import { WiThermometer } from "react-icons/wi"
@@ -121,6 +122,7 @@ export default function Listing() {
     })
   }, [listing])
 
+   
 
   if (loading) return <p className="text-center my-7 text-2xl">Loading...</p>
   if (!listing) {
@@ -133,6 +135,20 @@ export default function Listing() {
     <main className="">
       {listing && (
         <>
+          <div className=" text-center font-semibold text-lg w-full">
+            {listing.offer ? (
+              <p className="bg-yellow-300 p-3 border ">Reduced</p>
+            ) : (
+              ""
+            )}
+
+            {new Date() - new Date(listing.createdAt) <
+            7 * 24 * 60 * 60 * 1000 ? (
+              <p className="bg-green-300 p-3 border ">New Listing</p>
+            ) : (
+              ""
+            )}
+          </div>
           <div className="flex flex-col w-full items-center mt-8 p-5 ">
             <h1 className="text-4xl font-bold text-center text-slate-700">
               {listing.bedrooms} Bedroom {listing.propertyType}{" "}
@@ -179,14 +195,17 @@ export default function Listing() {
                 </Swiper>
                 {showModal && (
                   <Modal open={showModal} onClose={closeModal}>
-                    <ImageModal imageUrls={listing.imageUrls} onClose={closeModal} />
+                    <ImageModal
+                      imageUrls={listing.imageUrls}
+                      onClose={closeModal}
+                    />
                   </Modal>
                 )}
                 <Swiper
                   onSwiper={setThumbsSwiper}
                   loop={true}
                   spaceBetween={2}
-                  slidesPerView={4} 
+                  slidesPerView={4}
                   freeMode={true}
                   watchSlidesProgress={true}
                   modules={[FreeMode, Navigation, Thumbs]}
@@ -210,9 +229,26 @@ export default function Listing() {
                 </h3>
                 <p className="mt-4 text-start">{listing.description}</p>
               </div>
-              <div className="mt-8">
-                <h5 className="text-slate-700 font-bold">Property Details:</h5>
-                <div className="grid grid-cols-2 gap-4 mt-4">
+              <div className="flex flex-col w-full text-center mt-7">
+                <h5 className="text-slate-700 font-bold text-2xl ">
+                  Property Details
+                </h5>
+                <div className="grid grid-cols-2 gap-4 mt-7 text-start ">
+                  <div className="flex gap-4 ">
+                    <FaHouzz className="inline" />
+                    <p> ERF Size {listing.propertySize} m²</p>
+                  </div>
+                  <div className="flex gap-4">
+                    <FaHouzz className="inline" />
+                    <p>Building Size {listing.buildingSize} m²</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col w-full text-center mt-7 ">
+                <h5 className="text-slate-700 font-bold text-2xl">
+                  Property Features
+                </h5>
+                <div className="grid grid-cols-2 gap-4 mt-7 text-start ">
                   <p>
                     <FaBed className="inline" /> {listing.bedrooms} Bedrooms
                   </p>
@@ -245,9 +281,23 @@ export default function Listing() {
                   )}
                 </div>
               </div>
-              <div className="mt-8 sm-flex sm-flex-col">
-                <h5 className="text-slate-700 font-bold">Location:</h5>
-                <div className="mt-4 border-4 flex justify-between sm:flex">
+              <div className="flex flex-col w-full text-center mt-7">
+                <h5 className="text-slate-700 font-bold text-2xl">Other Features</h5>
+               <div className="grid grid-cols-2 gap-4 mt-7 text-start "> {listing.misc
+                  .filter((feature) => feature.trim() !== "")
+                  .map((feature, index) => (
+                    <p key={index}
+                      className="flex gap-2 items-center"
+                    >
+                      <FaRegCheckCircle /> {feature}
+                    </p>
+                  ))}
+                  </div>
+              </div>
+              
+              <div className="flex flex-col w-full text-center mt-7">
+                <h5 className="text-slate-700 font-bold text-2xl">Location</h5>
+                <div className="mt-4 flex justify-between sm:flex">
                   <div className="flex flex-col gap-4 sm:w-full">
                     <h3 className="text-slate-700 font-bold">Address:</h3>
                     <div className="flex gap-2 items-center p-3">
@@ -331,6 +381,14 @@ export default function Listing() {
                     </MapContainer>
                   </div>
                 </div>
+              </div>
+              <div>
+                <h5>
+                  Virtual Tour:
+                </h5>
+                <iframe src={listing.video} frameBorder="0">  
+
+                </iframe>
               </div>
             </div>
             <div className="lg:w-1/3 mt-5">

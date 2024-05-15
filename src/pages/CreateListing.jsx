@@ -218,6 +218,8 @@ export default function CreateListing() {
     })
   })
 
+  
+
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">
@@ -587,7 +589,7 @@ export default function CreateListing() {
               video link and paste it here.
               <input
                 type="text"
-                id="video"
+                id="videoUrl"
                 className="p-3 border border-gray-300 rounded w-full"
                 onChange={handleChange}
                 value={formData.youtubeUrl}
