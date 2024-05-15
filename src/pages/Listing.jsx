@@ -186,7 +186,7 @@ export default function Listing() {
                   onSwiper={setThumbsSwiper}
                   loop={true}
                   spaceBetween={2}
-                  slidesPerView={6}
+                  slidesPerView={4} 
                   freeMode={true}
                   watchSlidesProgress={true}
                   modules={[FreeMode, Navigation, Thumbs]}
@@ -281,7 +281,7 @@ export default function Listing() {
                       </ul>
                     </div>
                   </div>
-                  <div className=" sm:w-full sm:h-96 sm:flex sm:flex-col">
+                  <div className=" sm:w-full h-auto  sm:flex sm:flex-col">
                     <MapContainer
                       center={[listing.lat, listing.long]}
                       zoom={13}

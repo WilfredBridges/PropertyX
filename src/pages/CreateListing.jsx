@@ -8,16 +8,16 @@ import {
 import { app } from "../firebase"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import { Loader } from '@googlemaps/js-api-loader';
-
+import { Loader } from "@googlemaps/js-api-loader"
 
 export default function CreateListing() {
   const { currentUser } = useSelector((state) => state.user)
   const navigate = useNavigate()
   const [files, setFiles] = useState([])
-  const addressInputRef = useRef(null);
+  const addressInputRef = useRef(null)
   const [formData, setFormData] = useState({
     imageUrls: [],
+    videoUrl: "",
     name: "",
     description: "",
     address: "",
@@ -27,6 +27,8 @@ export default function CreateListing() {
     lat: "",
     type: "rent",
     propertyType: "",
+    propertySize: 0,
+    buildingSize: 0,
     bedrooms: 1,
     bathrooms: 1,
     reception: 1,
@@ -39,6 +41,7 @@ export default function CreateListing() {
     pool: false,
     aircon: false,
     balcony: false,
+    misc: [],
   })
   const [imageUploadError, setImageUploadError] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -105,6 +108,16 @@ export default function CreateListing() {
     })
   }
 
+  const handleAddFeature = (e) => {
+    
+    if (typeof formData.misc === 'string') {
+      setFormData({
+        ...formData,
+        misc: [formData.misc, e.target.value],
+      });
+    } 
+  } 
+
   const handleChange = (e) => {
     if (e.target.id === "sale" || e.target.id === "rent") {
       setFormData({
@@ -138,6 +151,15 @@ export default function CreateListing() {
         [e.target.id]: e.target.value,
       })
     }
+
+    if (e.target.id === "misc") {
+      setFormData({
+        ...formData,
+        misc: e.target.value.split(",").map((item) => item.trim()),
+      });
+
+    }
+
   }
 
   const handleSubmit = async (e) => {
@@ -174,29 +196,34 @@ export default function CreateListing() {
   const loader = new Loader({
     apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
     version: "weekly",
-    libraries: ["places"]
-  });
+    libraries: ["places"],
+  })
 
   loader.load().then(() => {
-    const autocomplete = new window.google.maps.places.Autocomplete(addressInputRef.current);
-    autocomplete.addListener('place_changed', () => {
-      const place = autocomplete.getPlace();
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      addressInputRef.current
+    )
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace()
       if (!place.geometry) {
-        console.error('Autocomplete\'s returned place contains no geometry');
-        return;
+        console.error("Autocomplete's returned place contains no geometry")
+        return
       }
-      const location = place.geometry.location;
-      setFormData(prevFormData => ({
+      const location = place.geometry.location
+      setFormData((prevFormData) => ({
         ...prevFormData,
         address: place.formatted_address,
-        long: location.lng().toString(), 
+        long: location.lng().toString(),
         lat: location.lat().toString(),
-        subburb: place.address_components.find(component => component.types.includes('locality')).long_name,
-        city: place.address_components.find(component => component.types.includes('postal_town')).long_name
-      }));
-    });
-  });
-
+        subburb: place.address_components.find((component) =>
+          component.types.includes("locality")
+        ).long_name,
+        city: place.address_components.find((component) =>
+          component.types.includes("postal_town")
+        ).long_name,
+      }))
+    })
+  })
 
   return (
     <main className="p-3 max-w-4xl mx-auto">
@@ -252,26 +279,24 @@ export default function CreateListing() {
             ref={addressInputRef}
           />
           <input
-            type='text'
-            placeholder='Suburb'
-            className='border p-3 rounded-lg'
-            id='subburb'
+            type="text"
+            placeholder="Suburb"
+            className="border p-3 rounded-lg"
+            id="subburb"
             required
             onChange={handleChange}
             value={formData.subburb}
           />
           <input
-            type='text'
-            placeholder='City'
-            className='border p-3 rounded-lg'
-            id='city'
+            type="text"
+            placeholder="City"
+            className="border p-3 rounded-lg"
+            id="city"
             required
             onChange={handleChange}
             value={formData.city}
           />
-          
-          
-          
+
           <div className="flex gap-6">
             <input
               type="string"
@@ -374,6 +399,58 @@ export default function CreateListing() {
               <span>Offer</span>
             </div>
           </div>
+          <div className="flex flex-wrap gap-6 items-center" >
+          <p>Other Features:</p>
+            <div>
+              
+              <input
+                type="text"
+                className="p-3 border border-gray-300 rounded-md"
+                id="misc"
+                onChange={handleChange}
+                value={formData.misc}
+                placeholder="Enter features here"
+              />
+            </div>
+            <div>
+              <button onClick={handleAddFeature}
+                      className="p-3 bg-slate-700 border rounded-lg text-white"
+              
+              >
+                Add
+              </button>
+            </div>
+          </div>
+          <div>
+            {formData.misc.map((feature, index) => (
+              <div key={index}>
+              <p>{feature}</p>
+            </div>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-6">
+            <div>
+              <input
+                type="number"
+                className="p-3 border border-gray-300 rounded-md"
+                id="propertySize"
+                onChange={handleChange}
+                value={formData.propertySize}
+              />
+
+              <p>Property Size (sqm)</p>
+            </div>
+            <div>
+              <input
+                type="number"
+                className="p-3 border border-gray-300 rounded-md"
+                id="buildingSize"
+                onChange={handleChange}
+                value={formData.buildingSize}
+              />
+              <p>Building Size</p>
+            </div>
+          </div>
           <div className="flex flex-wrap gap-6">
             <div className="flex items-center gap-2">
               <input
@@ -472,7 +549,7 @@ export default function CreateListing() {
           <p className="font-semibold">
             Images:
             <span className="font-normal text-gray-600 ml-2">
-              The first image will be the cover (max 6)
+              The first image will be the cover (max 20)
             </span>
           </p>
           <div className="flex gap-4">
@@ -516,6 +593,20 @@ export default function CreateListing() {
                 </button>
               </div>
             ))}
+          <div className="">
+            <p>
+              <span className="font-semibold">Video:</span> Copy your Youtube
+              video link and paste it here.
+              <input
+                type="text"
+                id="video"
+                className="p-3 border border-gray-300 rounded w-full"
+                onChange={handleChange}
+                value={formData.youtubeUrl}
+                placeholder="Youtube URL"
+              />
+            </p>
+          </div>
           <button
             disabled={loading || uploading}
             className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
