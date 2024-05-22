@@ -108,8 +108,6 @@ export default function CreateListing() {
     })
   }
 
-  
-
   const handleChange = (e) => {
     if (e.target.id === "sale" || e.target.id === "rent") {
       setFormData({
@@ -145,14 +143,11 @@ export default function CreateListing() {
     }
 
     if (e.target.id === "misc") {
-      
       setFormData({
         ...formData,
-        misc: e.target.value.split(",").map((item => item)),
-      });
-
+        misc: e.target.value.split(",").map((item) => item),
+      })
     }
-
   }
 
   const handleSubmit = async (e) => {
@@ -217,8 +212,6 @@ export default function CreateListing() {
       }))
     })
   })
-
-  
 
   return (
     <main className="p-3 max-w-4xl mx-auto">
@@ -394,10 +387,9 @@ export default function CreateListing() {
               <span>Offer</span>
             </div>
           </div>
-          <div className="flex flex-wrap gap-6 items-center" >
-          
+          <div className="flex flex-wrap gap-6 items-center">
             <div>
-            <p>Other Features:</p>
+              <p>Other Features:</p>
               <input
                 type="text"
                 className="p-3 border border-gray-300 rounded-md"
@@ -414,8 +406,8 @@ export default function CreateListing() {
           <div>
             {formData.misc.map((feature, index) => (
               <div key={index}>
-              <p>- {feature}</p>
-            </div>
+                <p>- {feature}</p>
+              </div>
             ))}
           </div>
           <div className="flex flex-wrap gap-6">
@@ -563,26 +555,23 @@ export default function CreateListing() {
           <p className="text-red-700 text-sm">
             {imageUploadError && imageUploadError}
           </p>
-          {formData.imageUrls.length > 0 &&
-            formData.imageUrls.map((url, index) => (
-              <div
-                key={url}
-                className="flex justify-between p-3 border items-center"
-              >
+          <div className="grid grid-cols-2 gap-4">
+            {formData.imageUrls.map((url, index) => (
+              <div key={index} className="relative">
                 <img
                   src={url}
-                  alt="listing image"
-                  className="w-20 h-20 object-contain rounded-lg"
+                  alt={`Uploaded Image ${index + 1}`}
+                  className="w-full h-auto rounded-lg"
                 />
                 <button
-                  type="button"
                   onClick={() => handleRemoveImage(index)}
-                  className="p-3 text-red-700 rounded-lg uppercase hover:opacity-75"
+                  className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-lg"
                 >
-                  Delete
+                  <span>X</span>
                 </button>
               </div>
             ))}
+          </div>
           <div className="">
             <p>
               <span className="font-semibold">Video:</span> Copy your Youtube
