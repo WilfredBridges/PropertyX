@@ -16,6 +16,7 @@ import CreateListing from "./pages/CreateListing"
 import UpdateListing from "./pages/UpdateListing"
 import Listing from "./pages/Listing"
 import Search from "./pages/Search"
+import Update from "./pages/Update"
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/create-listing" element={<CreateListing />} />
+          <Route path="/create-listing/update" element={<Update />} />
           <Route path="/update-listing/:listingId" element={<UpdateListing />} />
         </Route>
       </Routes>
