@@ -136,7 +136,11 @@ export default function Listing() {
       {listing && (
         <>
           <div className=" text-center font-semibold text-lg w-full">
-            {listing.offer ? (
+            {listing.sold ? (
+              <p className="bg-red-300 p-3 border ">Sold</p>
+            ) : (
+              <div>
+                {listing.offer ? (
               <p className="bg-yellow-300 p-3 border ">Reduced</p>
             ) : (
               ""
@@ -148,6 +152,10 @@ export default function Listing() {
             ) : (
               ""
             )}
+              </div>
+            )}
+ 
+            
           </div>
           <div className="flex flex-col w-full items-center mt-8 p-5 ">
             <h1 className="text-4xl font-bold text-center text-slate-700">

@@ -10,6 +10,7 @@ export default function Home() {
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
+  const [soldListings, setSoldListings] = useState([]);
   SwiperCore.use([Navigation]);
   console.log(offerListings);
   useEffect(() => {
@@ -23,6 +24,7 @@ export default function Home() {
         console.log(error);
       }
     };
+    
     const fetchRentListings = async () => {
       try {
         const res = await fetch('/api/listing/get?type=rent&limit=4');
@@ -39,10 +41,23 @@ export default function Home() {
         const res = await fetch('/api/listing/get?type=sale&limit=4');
         const data = await res.json();
         setSaleListings(data);
+        fetchSoldListings();
       } catch (error) {
         log(error);
       }
     };
+
+    const fetchSoldListings = async () => {
+      try {
+        const res = await fetch('/api/listing/get?sold=true&limit=4');
+        const data = await res.json();
+        setSoldListings(data);
+        
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     fetchOfferListings();
   }, []);
   return (
@@ -123,6 +138,19 @@ export default function Home() {
             </div>
             <div className='flex flex-wrap gap-4'>
               {saleListings.map((listing) => (
+                <ListingItem listing={listing} key={listing._id} />
+              ))}
+            </div>
+          </div>
+        )}
+        {soldListings && soldListings.length > 0 && (
+          <div className=''>
+            <div className='my-3'>
+              <h2 className='text-2xl font-semibold text-slate-600'>Recently sold</h2>
+              <Link className='text-sm text-blue-800 hover:underline' to={'/search?sold=true'}>Show more recently sold</Link>
+            </div>
+            <div className='flex flex-wrap gap-4'>
+              {soldListings.map((listing) => (
                 <ListingItem listing={listing} key={listing._id} />
               ))}
             </div>
