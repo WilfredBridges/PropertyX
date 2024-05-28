@@ -17,6 +17,8 @@ import UpdateListing from "./pages/UpdateListing"
 import Listing from "./pages/Listing"
 import Search from "./pages/Search"
 import Update from "./pages/Update"
+import AgentList from "./pages/AgentList"
+import Agent from "./pages/Agent"
 
 export default function App() {
   return (
@@ -27,6 +29,8 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/all-agents" element={<AgentList />} />
+        <Route path="/agents/:agentId" element={<Agent />} />
         <Route path="/listing/:listingId" element={<Listing />} />
         <Route path="/search" element={<Search />} />
 
