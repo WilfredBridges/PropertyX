@@ -19,6 +19,7 @@ import Search from "./pages/Search"
 import Update from "./pages/Update"
 import AgentList from "./pages/AgentList"
 import Agent from "./pages/Agent"
+import Footer from "./components/Footer"
 
 export default function App() {
   return (
@@ -41,6 +42,7 @@ export default function App() {
           <Route path="/update-listing/:listingId" element={<UpdateListing />} />
         </Route>
       </Routes>
+      <Footer />
     </BrowserRouter>
   )
 }
