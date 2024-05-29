@@ -3,12 +3,20 @@ import { Link } from "react-router-dom";
 
 const AgentCard = ({ agent }) => {
   return (
-    <Link to={`/agents/${agent._id}`}>
-    <div className="bg-white shadow-md rounded-lg p-4 m-4">
-      <img src={agent.avatar} alt={agent.username} className="w-32 h-32 rounded-full mx-auto" />
-      <h3 className="text-center text-xl font-semibold mt-2">{agent.username}</h3>
-      <p className="text-center text-gray-600">{agent.email}</p>
-    </div>
+    <Link to={`/agents/${agent._id}`} className="relative block group h-full">
+      <div className="relative overflow-hidden bg-black rounded-lg shadow-md h-full flex flex-col">
+        <img
+          src={agent.avatar}
+          alt={agent.username}
+          className="w-full h-full object-cover transition-transform duration-300 transform group-hover:scale-105"
+        />
+        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
+          <h3 className="text-white text-2xl font-bold">{agent.username}</h3>
+          <p className="text-white text-sm">{agent.role}</p>
+          
+  
+        </div>
+      </div>
     </Link>
   );
 };

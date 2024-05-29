@@ -28,10 +28,15 @@ const AgentList = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <h1 className="text-2xl font-bold text-center my-4">Agents</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <h1 className="text-4xl font-bold text-center my-4 text-gray-800">Meet Our Expert Agents</h1>
+      <p className="text-center text-lg text-gray-600 mb-8">
+        Our team of dedicated and experienced agents is here to help you find your dream property. With a wealth of knowledge and a passion for real estate, our agents are committed to providing exceptional service and guidance every step of the way.
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {agents.map((agent) => (
-          <AgentCard key={agent._id} agent={agent} />
+          <div key={agent._id} className="h-full">
+            <AgentCard agent={agent} />
+          </div>
         ))}
       </div>
     </div>
