@@ -24,10 +24,20 @@ export default function Profile() {
   const [file, setFile] = useState(undefined);
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    username: currentUser.username || '',
+    email: currentUser.email || '',
+    password: '',
+    role: currentUser.role || 'Agent',
+    about: currentUser.about || '',
+    qualifications: currentUser.qualifications || '',
+    cellNumber: currentUser.cellNumber || '',
+    avatar: currentUser.avatar || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+  });
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [showListingsError, setShowListingsError] = useState(false);
   const [userListings, setUserListings] = useState([]);
+  const [activeTab, setActiveTab] = useState('personal');
   const dispatch = useDispatch();
 
   // firebase storage
@@ -67,7 +77,11 @@ export default function Profile() {
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+    const { id, value } = e.target;
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [id]: value
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -163,7 +177,23 @@ export default function Profile() {
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
+      <div className="flex  justify-between mb-8">
+        <button 
+        onClick={() => setActiveTab('personal')} 
+        className={`tab ${activeTab === 'personal' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600'} px-4 py-2 rounded-md text-sm font-medium`} 
+        >
+          Personal Information
+        </button>
+        <button 
+        onClick={() => setActiveTab('about')} 
+        className={`tab ${activeTab === 'about' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600'} px-4 py-2 rounded-md text-sm font-medium`}
+        >
+          About
+        </button>
+      </div>
       <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
+      {activeTab === 'personal' && (
+          <div className='flex flex-col gap-4'>
         <input
           onChange={(e) => setFile(e.target.files[0])}
           type='file'
@@ -193,7 +223,7 @@ export default function Profile() {
         <input
           type='text'
           placeholder='username'
-          defaultValue={currentUser.username}
+          value={formData.username}
           id='username'
           className='border p-3 rounded-lg'
           onChange={handleChange}
@@ -202,9 +232,17 @@ export default function Profile() {
           type='email'
           placeholder='email'
           id='email'
-          defaultValue={currentUser.email}
+          value={formData.email}
           className='border p-3 rounded-lg'
           onChange={handleChange}
+        />
+        <input type="text"
+        id="cellNumber"
+        value={formData.cellNumber}
+        placeholder="Cell Number"
+        className='border p-3 rounded-lg'
+        onChange={handleChange}
+        
         />
         <input
           type='password'
@@ -213,6 +251,43 @@ export default function Profile() {
           id='password'
           className='border p-3 rounded-lg'
         />
+        </div>
+        )}
+        {activeTab === 'about' && (
+          <div className='flex flex-col gap-4'>
+
+        <input 
+        type="text" 
+        placeholder='Role'
+        value={formData.role}
+        id="role"
+        className='border p-3 rounded-lg'
+        onChange={handleChange}
+        
+        />
+
+        <textarea placeholder='About'
+         id="about" 
+         cols="30" rows="10"
+         className='border p-3 rounded-lg'
+         onChange={handleChange}
+         value={formData.about}>
+
+        </textarea>
+
+        <input 
+        type="text" 
+        placeholder='Qualifications' 
+        id="qualifications" 
+        className='border p-3 rounded-lg' 
+        onChange={handleChange} 
+        value={formData.qualifications}
+         />
+         </div>
+
+        )}
+
+
         <button
           disabled={loading}
           className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'
