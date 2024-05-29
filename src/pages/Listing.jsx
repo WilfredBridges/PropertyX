@@ -122,7 +122,14 @@ export default function Listing() {
     })
   }, [listing])
 
-   
+  const formatDescription = (description) => {
+    return description.split("\n").map((str, index) => (
+      <span key={index}>
+        {str}
+        <br />
+      </span>
+    ))
+  }
 
   if (loading) return <p className="text-center my-7 text-2xl">Loading...</p>
   if (!listing) {
@@ -141,21 +148,19 @@ export default function Listing() {
             ) : (
               <div>
                 {listing.offer ? (
-              <p className="bg-yellow-300 p-3 border ">Reduced</p>
-            ) : (
-              ""
-            )}
+                  <p className="bg-yellow-300 p-3 border ">Reduced</p>
+                ) : (
+                  ""
+                )}
 
-            {new Date() - new Date(listing.createdAt) <
-            7 * 24 * 60 * 60 * 1000 ? (
-              <p className="bg-green-300 p-3 border ">New Listing</p>
-            ) : (
-              ""
-            )}
+                {new Date() - new Date(listing.createdAt) <
+                7 * 24 * 60 * 60 * 1000 ? (
+                  <p className="bg-green-300 p-3 border ">New Listing</p>
+                ) : (
+                  ""
+                )}
               </div>
             )}
- 
-            
           </div>
           <div className="flex flex-col w-full items-center mt-8 p-5 ">
             <h1 className="text-4xl font-bold text-center text-slate-700">
@@ -235,7 +240,9 @@ export default function Listing() {
                 <h3 className="text-2xl text-slate-700 font-semibold">
                   {listing.name}
                 </h3>
-                <p className="mt-4 text-start">{listing.description}</p>
+                <p className="mt-4 text-start">
+                  {formatDescription(listing.description)}
+                </p>
               </div>
               <div className="flex flex-col w-full text-center mt-7">
                 <h5 className="text-slate-700 font-bold text-2xl ">
@@ -290,22 +297,24 @@ export default function Listing() {
                 </div>
               </div>
               <div className="flex flex-col w-full text-center mt-7">
-                <h5 className="text-slate-700 font-bold text-2xl">Other Features</h5>
-               <div className="grid grid-cols-2 gap-4 mt-7 text-start "> {listing.misc
-                  .filter((feature) => feature.trim() !== "")
-                  .map((feature, index) => (
-                    <p key={index}
-                      className="flex gap-2 items-center"
-                    >
-                      <FaRegCheckCircle /> {feature}
-                    </p>
-                  ))}
-                  </div>
+                <h5 className="text-slate-700 font-bold text-2xl">
+                  Other Features
+                </h5>
+                <div className="grid grid-cols-2 gap-4 mt-7 text-start ">
+                  {" "}
+                  {listing.misc
+                    .filter((feature) => feature.trim() !== "")
+                    .map((feature, index) => (
+                      <p key={index} className="flex gap-2 items-center">
+                        <FaRegCheckCircle /> {feature}
+                      </p>
+                    ))}
+                </div>
               </div>
-              
+
               <div className="flex flex-col w-full text-center mt-7">
                 <h5 className="text-slate-700 font-bold text-2xl">Location</h5>
-                <div className="mt-4 flex justify-between sm:flex">
+                <div className="mt-4 flex justify-between sm:flex-row flex-col ">
                   <div className="flex flex-col gap-4 sm:w-full">
                     <h3 className="text-slate-700 font-bold">Address:</h3>
                     <div className="flex gap-2 items-center p-3">
@@ -339,12 +348,12 @@ export default function Listing() {
                       </ul>
                     </div>
                   </div>
-                  <div className=" sm:w-full h-auto  sm:flex sm:flex-col">
+                  <div className="w-full flex flex-col gap-4"> 
                     <MapContainer
                       center={[listing.lat, listing.long]}
                       zoom={13}
                       scrollWheelZoom={false}
-                      className="h-screen sm:h-96 mt-2"
+                      className="w-full h-auto min-h-64 sm:min-h-96"
                     >
                       <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -390,13 +399,23 @@ export default function Listing() {
                   </div>
                 </div>
               </div>
-              <div>
-                <h5>
-                  Virtual Tour:
+              <div className="flex flex-col w-full text-center mt-7">
+                <h5 className="text-slate-700 font-bold text-2xl">
+                  Virtual Tour
                 </h5>
-                <iframe src={listing.video} frameBorder="0">  
-
-                </iframe>
+                {listing.videoUrl ? (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${new URL(
+                      listing.videoUrl
+                    ).searchParams.get("v")}`}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-64"
+                  ></iframe>
+                ) : (
+                  <p>Video not available.</p>
+                )}
               </div>
             </div>
             <div className="lg:w-1/3 mt-5">
