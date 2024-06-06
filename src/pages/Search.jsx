@@ -108,7 +108,9 @@ export default function Search() {
       setSidebardata((prev) => ({ ...prev, [id]: value }))
     }
 
-    
+    if (id === "sale" || id === "rent" || id === "all") {
+      setSidebardata((prev) => ({ ...prev, type: id }))
+    }
 
     // Special handling for split values like sort_order
     if (id === "sort_order") {
@@ -190,6 +192,8 @@ export default function Search() {
               <input
                 type="checkbox"
                 id="all"
+                name="type"
+                value="all"
                 className="w-5"
                 onChange={handleChange}
                 checked={sidebardata.type === "all"}
@@ -308,6 +312,7 @@ export default function Search() {
                 target: { value, name: "bedroomsRange", type: "radio" },
               })
             }
+            className="flex"
             checkedValue={sidebardata.bedroomsRange}
             horizontal
           >
