@@ -46,7 +46,7 @@ export default function Contact({ listing }) {
             <span className="font-semibold">{listing.name}</span>
           </p>
           <div className="flex justify-center">
-            <img src={landlord.avatar} alt="Agent profile picture" className="rounded-full w-32 h-32"/>
+           <Link to={`/agents/${landlord._id}`}> <img src={landlord.avatar} alt="Agent profile picture" className="rounded-full w-32 h-32"/></Link>
           </div>
           <label htmlFor="">Full Name</label>
           <input type="text" 
