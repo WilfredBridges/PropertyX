@@ -545,6 +545,7 @@ const handleChange = (e) => {
             className="w-full h-auto rounded-lg"
           />
           <button
+            type="button"
             onClick={() => handleRemoveImage(index)}
             className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-lg"
           >

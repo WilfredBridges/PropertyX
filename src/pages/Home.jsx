@@ -165,12 +165,15 @@ export default function Home() {
 
       <div className="flex flex-col gap-6 p-28 px-3 max-w-6xl mx-auto">
         <h2 className="text-slate-700 font-bold text-3xl lg:text-6xl">
-          Map of listings
+          Listings map
         </h2>
+        <div className="text-gray-400 text-xs sm:text-sm">
+          Click on a marker to see the listing details
+        </div>
 
         <MapContainer
           center={getMapCenter(listings)}
-          zoom={2}
+          zoom={10}
           scrollWheelZoom={false}
           style={{ height: "400px", width: "100%", border: "3px solid black", borderRadius: "10px" }}
           
@@ -185,7 +188,10 @@ export default function Home() {
               position={[listing.lat, listing.long]}
               icon={rentIcon}
             >
-              <Popup>{listing.name}</Popup>
+              <Popup>
+                
+                {listing.name}
+                </Popup>
             </Marker>
           ))}
           {saleListings.map((listing) => (
