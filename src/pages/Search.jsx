@@ -77,6 +77,7 @@ export default function Search() {
       setLoading(true)
       setShowMore(false)
       const searchQuery = urlParams.toString()
+      console.log("API Request URL:", `/api/listing/get?${searchQuery}`);
       const res = await fetch(`/api/listing/get?${searchQuery}`)
       const data = await res.json()
       if (data.length > 8) {
@@ -87,6 +88,8 @@ export default function Search() {
       setListings(data)
       setLoading(false)
     }
+
+    
 
     fetchListings()
   }, [location.search])
@@ -359,8 +362,7 @@ export default function Search() {
             >
               <option value="regularPrice_desc">Price high to low</option>
               <option value="regularPrice_asc">Price low to hight</option>
-              <option value="createdAt_desc">Latest</option>
-              <option value="createdAt_asc">Oldest</option>
+              
             </select>
           </div>
           <button className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95">

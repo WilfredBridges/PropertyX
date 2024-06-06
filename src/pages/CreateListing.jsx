@@ -284,7 +284,7 @@ export default function CreateListing() {
               >
                 <option value="">Select Property Type</option>
                 <option value="house">House</option>
-                <option value="appartment">Appartment/Flat</option>
+                <option value="apartment">Apartment/Flat</option>
                 <option value="townhouse">Townhouse</option>
                 <option value="land">Vacant Land</option>
                 <option value="other">Other</option>
@@ -551,6 +551,7 @@ export default function CreateListing() {
             className="w-full h-auto rounded-lg"
           />
           <button
+            type="button"
             onClick={() => handleRemoveImage(index)}
             className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-lg"
           >

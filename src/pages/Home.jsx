@@ -42,6 +42,7 @@ export default function Home() {
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
   })
+  
 
   
 
@@ -50,65 +51,62 @@ export default function Home() {
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const response = await fetch("/api/listing/get")
-        const data = await response.json()
-        console.log(data)
-        setListings(data)
+        const response = await fetch("/api/listing/get");
+        const data = await response.json();
+        setListings(data);
       } catch (error) {
-        console.error("Failed to fetch listings:", error)
+        console.error("Failed to fetch listings:", error);
       }
-    }
-
-    fetchListings()
+    };
+  
     const fetchOfferListings = async () => {
       try {
-        const res = await fetch("/api/listing/get?offer=true&limit=4")
-        const data = await res.json()
-        setOfferListings(data)
-        fetchRentListings()
+        const res = await fetch("/api/listing/get?offer=true&limit=4");
+        const data = await res.json();
+        setOfferListings(data);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-    }
-
+    };
+  
     const fetchRentListings = async () => {
       try {
-        const res = await fetch("/api/listing/get?type=rent&limit=4")
-        const data = await res.json()
-        setRentListings(data)
-        fetchSaleListings()
+        const res = await fetch("/api/listing/get?type=rent&limit=4");
+        const data = await res.json();
+        setRentListings(data);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-    }
-
+    };
+  
     const fetchSaleListings = async () => {
       try {
-        const res = await fetch("/api/listing/get?type=sale&limit=4")
-        const data = await res.json()
-        setSaleListings(data)
-        fetchSoldListings()
+        const res = await fetch("/api/listing/get?type=sale&limit=4");
+        const data = await res.json();
+        setSaleListings(data);
       } catch (error) {
-        log(error)
+        console.log(error);
       }
-    }
-
+    };
+  
     const fetchSoldListings = async () => {
       try {
-        const res = await fetch("/api/listing/get?sold=true&limit=4")
-        const data = await res.json()
-        setSoldListings(data)
+        const res = await fetch("/api/listing/get?sold=true&limit=4");
+        const data = await res.json();
+        setSoldListings(data);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-    }
+    };
+  
+    fetchListings();
+    fetchOfferListings();
+    fetchRentListings();
+    fetchSaleListings();
+    fetchSoldListings();
+  }, []);
 
-    fetchOfferListings()
-  }, [])
-
-  useEffect(() => {
-    console.log(listings) // Check what listings are currently stored in state
-  }, [listings])
+  
 
   const getMapCenter = (listings) => {
     console.log("Calculating center for listings:", listings)

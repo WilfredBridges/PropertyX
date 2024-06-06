@@ -278,7 +278,7 @@ const handleChange = (e) => {
               >
                 <option value="">Select Property Type</option>
                 <option value="house">House</option>
-                <option value="appartment">Appartment/Flat</option>
+                <option value="apartment">Apartment/Flat</option>
                 <option value="townhouse">Townhouse</option>
                 <option value="land">Vacant Land</option>
                 <option value="other">Other</option>
