@@ -7,4 +7,23 @@ body {
   background-color: rgb(241, 245, 241);
 }
 
+.radio-container {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  margin-right: 10px;
+}
 
+.radio-label {
+  display: inline-block;
+  padding: 10px 20px;
+  border: 2px solid #21375a;
+  border-radius: 5px;
+  text-align: center;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.radio-label.selected {
+  background-color: #21375a;
+  color: #fff;
+}

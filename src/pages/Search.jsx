@@ -187,7 +187,7 @@ export default function Search() {
             />
           </div>
           <div className="flex gap-2 flex-wrap items-center">
-            <label className="font-semibold">Listing Status:</label>
+            <label className="font-semibold">Listing Type:</label>
             <div className="flex gap-2">
               <input
                 type="checkbox"
@@ -210,7 +210,7 @@ export default function Search() {
                 onChange={handleChange}
                 checked={sidebardata.type === "rent"}
               />
-              <span>Rent</span>
+              <span>To Rent</span>
             </div>
             <div className="flex gap-2">
               <input
@@ -222,8 +222,12 @@ export default function Search() {
                 onChange={handleChange}
                 checked={sidebardata.type === "sale"}
               />
-              <span>Sale</span>
+              <span>For Sale</span>
             </div>
+            
+          </div>
+          <div className="flex gap-2 flex-wrap items-center">
+            <label className="font-semibold">Property Status: </label>
             <div className="flex gap-2">
               <input
                 type="checkbox"
@@ -306,60 +310,45 @@ export default function Search() {
             </select>
           </div>
 
-          <RadioGroup
-            onChange={(value) =>
-              handleChange({
-                target: { value, name: "bedroomsRange", type: "radio" },
-              })
-            }
-            className="flex"
-            checkedValue={sidebardata.bedroomsRange}
-            horizontal
-          >
-            <RadioButton value="any">Any</RadioButton>
-            <RadioButton value="1+">1+</RadioButton>
-            <RadioButton value="2+">2+</RadioButton>
-            <RadioButton value="3+">3+</RadioButton>
-          </RadioGroup>
+          <div>
+  <label className="font-semibold">Bedrooms</label>
+  <div className="flex gap-2">
+    {['any', '1+', '2+', '3+', '4+', '5+'].map((value) => (
+      <label key={value} className="radio-container">
+        <input
+          type="radio"
+          name="bedroomsRange"
+          value={value}
+          checked={sidebardata.bedroomsRange === value}
+          onChange={handleChange}
+          className="hidden"
+        />
+        <span className={`radio-label ${sidebardata.bedroomsRange === value ? 'selected' : ''}`}>{value}</span>
+      </label>
+    ))}
+  </div>
+</div>
 
-          <RadioGroup
-            onChange={(value) =>
-              handleChange({
-                target: { value, name: "bathroomsRange", type: "radio" },
-              })
-            }
-            checkedValue={sidebardata.bathroomsRange}
-            horizontal
-          >
-            <RadioButton value="any">Any</RadioButton>
-            <RadioButton value="1+">1+</RadioButton>
-            <RadioButton value="2+">2+</RadioButton>
-            <RadioButton value="3+">3+</RadioButton>
-          </RadioGroup>
+<div>
+  <label className="font-semibold">Bathrooms</label>
+  <div className="flex gap-2">
+    {['any', '1+', '2+', '3+', '4+', '5+'].map((value) => (
+      <label key={value} className="radio-container">
+        <input
+          type="radio"
+          name="bathroomsRange"
+          value={value}
+          checked={sidebardata.bathroomsRange === value}
+          onChange={handleChange}
+          className="hidden"
+        />
+        <span className={`radio-label ${sidebardata.bathroomsRange === value ? 'selected' : ''}`}>{value}</span>
+      </label>
+    ))}
+  </div>
+</div>
 
-          <div className="flex gap-2 flex-wrap items-center">
-            <label className="font-semibold">Amenities:</label>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="parking"
-                className="w-5"
-                onChange={handleChange}
-                checked={sidebardata.parking}
-              />
-              <span>Parking</span>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="checkbox"
-                id="furnished"
-                className="w-5"
-                onChange={handleChange}
-                checked={sidebardata.furnished}
-              />
-              <span>Furnished</span>
-            </div>
-          </div>
+          
           <div className="flex items-center gap-2">
             <label className="font-semibold">Sort:</label>
             <select
